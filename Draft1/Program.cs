@@ -1,13 +1,4 @@
-﻿/*
- TODO:
-- Refactor the Sorting Feature in Binary Search because we are performing same computation multiple times. (Done)
-- Make sure both the user and the random number generator dont give the same number i.e. No Duplicates. (Done)
- 
-Questions:
-- Is it possible (or can we allow) for both user and random number arrays to have duplicate elements? 
- */
-
-/* ===================================================================================================== */
+﻿/* ===================================================================================================== */
 /* Subroutines */
 
 void ArrayPrinter(int[] inpArr)
@@ -21,10 +12,6 @@ void ArrayPrinter(int[] inpArr)
 int? BinarySearch(int Elem, int[] inpArr)
 {
     /* Return the Index of the Element (in the sorted array) if exist, otherwise return null */
-
-    // Sort the given array
-    //int[] array = inpArr;
-    //Array.Sort(array); // Modifying inplace, lowest to highest
 
     int[] array = inpArr.OrderBy(x => x).ToArray(); // Sort without mutating the Original Array
 
@@ -108,7 +95,7 @@ int[] RandomArrayGenerator(int lowestValue, int highestValue, int Size)
 
 /* Program Parameters */
 int arrSize = 10; // Size of Array as a Parameter. No need to prompt.
-int minVal = 10, maxVal = 99; // Min and Max Values for the Lottery Numbers
+int minVal = 1, maxVal = 99; // Min and Max Values for the Lottery Numbers
 
 int[] userArr = new int[arrSize]; // User's Lottery Numbers
 
@@ -151,7 +138,6 @@ while (true)
 void Main()
 {
     int[] userNumbers = userArr;
-    //Array.Sort(userNumbers); // Sort Inplace, but will be done again in BinarySearch method. Not Good!
 
     int[] randNumbers = RandomArrayGenerator(minVal, maxVal, arrSize); // Generate Random Lottery
 
@@ -171,7 +157,6 @@ void Main()
         int? matchIndex = BinarySearch(elem, userNumbers);
         if (matchIndex != null)
         {
-            //Console.WriteLine($"You got {elem}!!! Congrats!");
             matchList.Add(elem);
         }
     }

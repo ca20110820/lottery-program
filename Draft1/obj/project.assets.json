@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\20110820\\OneDrive - TAFE\\Sem 1\\ICTPRG440 and ICTPRG433 - CSharp\\Assessments\\Assessment 1 - Lottery Application\\LotteryProgram\\Draft1\\Draft1.csproj",
+      "projectUniqueName": "C:\\Users\\20110820\\source\\repos\\lottery-program\\Draft1\\Draft1.csproj",
       "projectName": "Draft1",
-      "projectPath": "C:\\Users\\20110820\\OneDrive - TAFE\\Sem 1\\ICTPRG440 and ICTPRG433 - CSharp\\Assessments\\Assessment 1 - Lottery Application\\LotteryProgram\\Draft1\\Draft1.csproj",
+      "projectPath": "C:\\Users\\20110820\\source\\repos\\lottery-program\\Draft1\\Draft1.csproj",
       "packagesPath": "C:\\Users\\20110820\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\20110820\\OneDrive - TAFE\\Sem 1\\ICTPRG440 and ICTPRG433 - CSharp\\Assessments\\Assessment 1 - Lottery Application\\LotteryProgram\\Draft1\\obj\\",
+      "outputPath": "C:\\Users\\20110820\\source\\repos\\lottery-program\\Draft1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\20110820\\AppData\\Roaming\\NuGet\\NuGet.Config"
