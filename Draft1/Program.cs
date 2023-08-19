@@ -1,18 +1,43 @@
-﻿/* ===================================================================================================== */
-/* Subroutines */
+﻿/*
+Student Name: Cedric Anover
+Student ID: 20110820
+Student Email: 20110820@tafe.wa.edu.au
+Unit/Cluster: ICTPRG440 and ICTPRG433
 
-void ArrayPrinter(int[] inpArr)
+ TODO:
+- Refactor the Sorting Feature in Binary Search because we are performing same computation multiple times. (Done)
+- Make sure both the user and the random number generator dont give the same number i.e. No Duplicates. (Done)
+- Add Feature for Prizes Based on the Number of Guesses and Threshold Parameter. (Done)
+ */
+
+/* ###################################################################################################################### */
+/* Subroutines */
+void ArrayPrinter(int[] array)
 {
-    for (int i = 0; i < inpArr.Length; i++)
+    for (int i = 0; i < array.Length; i++)
     {
-        Console.Write(inpArr[i] + " ");
+        if (i == 0)
+        {
+            Console.Write($"[{array[i]}, ");
+        }
+        else if (i == array.Length - 1)
+        {
+            Console.Write($"{array[i]}]");
+        }
+        else
+        {
+            Console.Write($"{array[i]}, ");
+        }
     }
+
+    Console.Write("\n");
 }
 
 int? BinarySearch(int Elem, int[] inpArr)
 {
     /* Return the Index of the Element (in the sorted array) if exist, otherwise return null */
 
+    // Sort the given array
     int[] array = inpArr.OrderBy(x => x).ToArray(); // Sort without mutating the Original Array
 
     // Apply Binary Search Algorithm
@@ -61,68 +86,60 @@ int[] RandomArrayGenerator(int lowestValue, int highestValue, int Size)
     int[] outArr = new int[Size];
 
     int i = 0;
-    while (true)
+    while (i < Size)
     {
-        Random rnd = new Random(); // Warning: Random Class in C# us Right-Exclusive!!!
+        Random rnd = new Random(); // Warning: Random Class in C# is Right-Exclusive!!!
         int randNumber = rnd.Next(lowestValue, highestValue + 1);
 
         // Check if the number does not exist in outArr
-        // int? matchIndex = BinarySearch(randNumber, outArr);
-        int? matchIndex = LinearSearch(randNumber, outArr);
+        //int? matchIndex = BinarySearch(randNumber, outArr);
+        int? matchIndex = BinarySearch(randNumber, outArr);
 
-        if (matchIndex == null)
+        if (matchIndex is null)
         {
             outArr[i] = randNumber;
-            i++; // Counter Update
-
-            // Exit Loop when Generated *Size* Random Numbers
-            if (i == Size)
-            {
-                break;
-            }
-        }
-        // We aleady included the random number in the array, skip iteration
-        else
-        {
-            continue;
+            i++; // Counter update only if the generated number is new
         }
     }
 
     return outArr;
 }
 
-/* ===================================================================================================== */
+/* ###################################################################################################################### */
 
 /* Program Parameters */
-int arrSize = 10; // Size of Array as a Parameter. No need to prompt.
-int minVal = 1, maxVal = 99; // Min and Max Values for the Lottery Numbers
+int arrSize = 3; // Size of Array as a Parameter. No need to prompt.
+int minVal = 1, maxVal = 10; // Min and Max Value Range for the Lottery Numbers (Both for User and Random Number Generator)
+
+double prizeThreshold = 0.5d;
+double maxCashPrize = 1000000.00d; // Maximum Cash Prize if user guessed perfectly
 
 int[] userArr = new int[arrSize]; // User's Lottery Numbers
 
 /* Prompt the User for their Lottery Numbers */
 int promptCounter = 0;
-Console.WriteLine($"Please enter your {arrSize} lottery numbers: ");
+Console.WriteLine($"Please enter your {arrSize} lottery numbers between {minVal} and {maxVal}: \n");
 while (true)
 {
     Console.Write($"Enter Number {promptCounter + 1}: ");
 
-    int tempInput;
-    bool resInput = int.TryParse( Console.ReadLine(), out tempInput);
+    int tempInput; // Temporarily Store the User Input
+    bool resInput = int.TryParse( Console.ReadLine(), out tempInput); // Result of the User Input
 
-    // Check and see if user inserted valid values.
+    // Check and see if user inserted valid values. If not, use continue to skip interation and prompt user again.
     if (!resInput)
     {
-        Console.WriteLine("Cannot Parse the given input into integer, please try again ...");
+        Console.WriteLine("Cannot Parse the given input into integer, please try again ...\n");
         continue;
     }
     if (tempInput < minVal || tempInput > maxVal)
     {
-        Console.WriteLine($"Invalid Entry! The Number must be in between {minVal} and {maxVal}. Please try again ...");
+        Console.WriteLine($"Invalid Entry! The Number must be in between {minVal} and {maxVal}. Please try again ...\n");
         continue;
     }
     if (BinarySearch(tempInput, userArr) != null)
     {
-        Console.WriteLine($"You already included {tempInput}. Please try a different number ...");
+        Console.WriteLine($"You already included {tempInput}. Please try a different number ...\n");
         continue;
     }
 
@@ -130,47 +147,62 @@ while (true)
 
     promptCounter++;
 
-    // Loop Exit Criterion
+    //Console.Write("Your Current Array: ");
+    //ArrayPrinter(userArr);
+    //Console.Write("\n");
+
+    // Loop Exit Criterion.
     if (promptCounter >= arrSize) { break; }
 }
 
-/* ===================================================================================================== */
+/* ###################################################################################################################### */
 void Main()
 {
-    int[] userNumbers = userArr;
+    //int[] userNumbers = userArr; // Redundant to create new variable
 
     int[] randNumbers = RandomArrayGenerator(minVal, maxVal, arrSize); // Generate Random Lottery
 
-    Console.Write("Lottery Numbers: ");
+    Console.Write("\nLottery Numbers: ");
     ArrayPrinter(randNumbers);
-    Console.Write("\n");
 
-    Console.Write("Your Numbers: ");
+    Console.Write("\nYour Numbers: ");
     ArrayPrinter(userArr);
     Console.Write("\n");
 
-    // Create List to Keep Track How many correct numbers the user guessed
-    List<int> matchList = new List<int>();
+    // Create List to Keep Track How many correct numbers the user guessed.
+    // Challenged myself to use LINQ.
+    int?[] matchList = new int?[arrSize];
 
-    foreach(int elem in randNumbers)
+    for (int i = 0; i < arrSize; i++)
     {
-        int? matchIndex = BinarySearch(elem, userNumbers);
-        if (matchIndex != null)
-        {
-            matchList.Add(elem);
-        }
+        int elem = randNumbers[i];
+        matchList[i] = BinarySearch(elem, userArr) != null ? elem : null; // Carefull! Can get confused with index and elements!
     }
 
-    if (matchList.Count == 0)
+    // Filter out 0 & null values. Type of matchList has to be preserved & declared.
+    int?[] tempMatchList = matchList.Where(x => x != null).ToArray();
+
+    if (tempMatchList.Length == 0)
     {
-        Console.WriteLine("Sorry, you did not guessed anything correct. Better luck next time.");
+        Console.WriteLine("\nSorry, you did not guessed anything correct. Better luck next time.");
     }
     else
     {
-        Console.WriteLine($"You managed to guess {matchList.Count} number(s)! They are: ");
-        foreach(int elem in matchList)
+        Console.WriteLine($"\nYou managed to guess {tempMatchList.Length} number(s)! They are: ");
+        foreach(int? elem in tempMatchList) // We know it will never have null because we filtered
         {
             Console.WriteLine(elem);
+        }
+
+        double percentGuessed = (double)tempMatchList.Length / (double)arrSize;
+        if (percentGuessed >= prizeThreshold)
+        {
+            double cashPrize = percentGuessed * maxCashPrize;
+            Console.WriteLine($"\nYou win ${cashPrize:n}!!!");
+        }
+        else
+        {
+            Console.WriteLine($"\nSorry No Prize. \nYou only guessed less than {prizeThreshold * 100} percent of the lottery numbers");
         }
     }
 }
